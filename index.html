@@ -126,7 +126,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <script>
-    // YOUR FIREBASE CONFIG INTEGRATED
     const firebaseConfig = {
       apiKey: "AIzaSyBWAVrKNVaxWRyUdQtnUl7tdOEAXssprwM",
       authDomain: "study-desk-b5e53.firebaseapp.com",
@@ -137,19 +136,21 @@
       appId: "1:171975511669:web:fd23b111b84679fc2d323c"
     };
 
-    // Firebase Initialize
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Unique User Identity Store
     let myName = localStorage.getItem("chat_user_id");
     if(!myName) {
       myName = "User_" + Math.floor(Math.random() * 8999 + 1000);
       localStorage.setItem("chat_user_id", myName);
     }
 
-    // SECRET UNLOCK CODE
     const SECRET_CODE = "#789#"; 
+
+    // Ask Notification Permission on Load
+    if ("Notification" in window) {
+      Notification.requestPermission();
+    }
 
     function handleSearch(event) {
       if (event.key === 'Enter') {
@@ -174,7 +175,6 @@
       document.getElementById('studyScreen').style.display = 'flex';
     }
 
-    // FIREBASE MESSAGING LOGIC
     function sendMessage() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
@@ -182,7 +182,6 @@
 
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      // Save to Firebase Database
       db.ref("secret_messages").push({
         sender: myName,
         message: text,
@@ -193,14 +192,23 @@
       input.value = '';
     }
 
+    // List of Fake Study Notifications
+    const fakeNotifications = [
+      "📚 PW Batch: New Physics DPP-4 uploaded. Solve now!",
+      "⚡ ALLEN Test Series: Tomorrow's mock test schedule is live.",
+      "🧪 Chemistry Notes Updated: Organic Reaction Mechanisms.",
+      "📝 New Math Assignment added in your batch workspace."
+    ];
+
     let isListening = false;
+    let initialLoad = true;
+
     function listenForMessages() {
       if (isListening) return;
       isListening = true;
 
       const container = document.getElementById('messageContainer');
       
-      // Fetch and listen to live messages
       db.ref("secret_messages").limitToLast(50).on("child_added", (snapshot) => {
         const data = snapshot.val();
         const isMe = data.sender === myName;
@@ -215,7 +223,24 @@
         
         container.insertAdjacentHTML('beforeend', msgHTML);
         container.scrollTop = container.scrollHeight;
+
+        // Trigger Fake Notification when other user messages
+        if (!isMe && !initialLoad) {
+          showFakeNotification();
+        }
       });
+
+      setTimeout(() => { initialLoad = false; }, 2000);
+    }
+
+    function showFakeNotification() {
+      if (Notification.permission === "granted") {
+        const randomFakeText = fakeNotifications[Math.floor(Math.random() * fakeNotifications.length)];
+        new Notification("📖 Study Desk", {
+          body: randomFakeText,
+          icon: "https://cdn-icons-png.flaticon.com/512/2232/2232688.png"
+        });
+      }
     }
   </script>
 </body>
