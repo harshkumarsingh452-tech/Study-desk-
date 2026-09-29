@@ -147,7 +147,7 @@
 
     const SECRET_CODE = "#789#"; 
 
-    // Ask Notification Permission on Load
+    // Request Notification Permissions
     if ("Notification" in window) {
       Notification.requestPermission();
     }
@@ -234,12 +234,26 @@
     }
 
     function showFakeNotification() {
-      if (Notification.permission === "granted") {
+      if ("Notification" in window && Notification.permission === "granted") {
         const randomFakeText = fakeNotifications[Math.floor(Math.random() * fakeNotifications.length)];
-        new Notification("📖 Study Desk", {
-          body: randomFakeText,
-          icon: "https://cdn-icons-png.flaticon.com/512/2232/2232688.png"
-        });
+        
+        // Change Document Title for visual cue
+        document.title = "🔔 (1) New Study Material!";
+
+        try {
+          new Notification("📖 Study Desk", {
+            body: randomFakeText,
+            icon: "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
+            vibrate: [200, 100, 200]
+          });
+        } catch (e) {
+          console.log("Notification fallback execution");
+        }
+
+        // Reset title after 5 seconds
+        setTimeout(() => {
+          document.title = "Study Desk - Prep & Notes";
+        }, 5000);
       }
     }
   </script>
