@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Physics Wallah Daily Planner</title>
 
-  <!-- PW Icons & Manifest Links (Local Path) -->
+  <!-- PW Icons & Manifest Links -->
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/jpeg" href="./pw-logo.jpg">
   <link rel="apple-touch-icon" href="./pw-logo.jpg">
@@ -52,7 +52,6 @@
 
     main { padding: 14px; flex: 1; overflow-y: auto; }
 
-    /* Continue Watching Banner (Opens YouTube) */
     .continue-card { background: #fffbeb; border: 1px solid #fef3c7; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; }
     .continue-card:active { opacity: 0.8; }
     .play-btn { width: 36px; height: 36px; border-radius: 50%; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
@@ -62,14 +61,12 @@
 
     .section-head { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
 
-    /* Quick Access Grid */
     .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
     .grid-item { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; cursor: pointer; transition: transform 0.1s; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
     .grid-item:active { transform: scale(0.97); }
     .grid-icon { width: 38px; height: 38px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     .grid-label { font-size: 11px; font-weight: 600; color: #334155; }
 
-    /* Bottom Navigation Bar */
     .bottom-nav { background: #ffffff; border-top: 1px solid #e2e8f0; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 600; color: #64748b; gap: 2px; cursor: pointer; }
     .nav-item.active { color: #5b21b6; }
@@ -92,15 +89,24 @@
     .sender-name { font-size: 11px; font-weight: 700; color: #818cf8; display: block; margin-bottom: 3px; }
     .time { font-size: 10px; opacity: 0.6; margin-top: 4px; display: block; text-align: right; }
     
-    /* Message Reaction Badge */
     .reaction-badge { position: absolute; bottom: -8px; left: 8px; background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 1px 5px; font-size: 12px; display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
     .msg-out .reaction-badge { left: auto; right: 8px; }
 
-    .input-bar { padding: 12px; background: #0f172a; border-top: 1px solid #1e293b; display: flex; gap: 8px; }
-    .chat-input { flex: 1; background: #020617; border: 1px solid #1e293b; border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 14px; outline: none; }
-    .send-btn { background: #4f46e5; border: none; color: #fff; border-radius: 10px; padding: 0 16px; font-weight: 600; cursor: pointer; }
+    /* Audio Player Custom Styling */
+    audio { width: 220px; height: 36px; margin-top: 4px; outline: none; }
 
-    /* Action Modal / Popup Menu */
+    .input-bar { padding: 12px; background: #0f172a; border-top: 1px solid #1e293b; display: flex; gap: 8px; align-items: center; }
+    .chat-input { flex: 1; background: #020617; border: 1px solid #1e293b; border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 14px; outline: none; }
+    .send-btn { background: #4f46e5; border: none; color: #fff; border-radius: 10px; padding: 10px 14px; font-weight: 600; cursor: pointer; }
+    .mic-btn { background: #1e293b; border: 1px solid #334155; color: #ef4444; border-radius: 10px; padding: 10px 12px; font-size: 15px; cursor: pointer; }
+    .mic-btn.recording { background: #ef4444; color: #fff; animation: pulse 1s infinite; }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
     .action-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
     .action-modal-overlay.active { display: flex; }
     .action-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 16px; width: 280px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
@@ -114,7 +120,7 @@
 </head>
 <body>
 
-  <!-- 1. DECOY PW DAILY PLANNER SCREEN -->
+  <!-- 1. DECOY PW PLANNER SCREEN -->
   <div id="studyScreen">
     <header>
       <div class="top-bar">
@@ -128,7 +134,6 @@
         </div>
       </div>
       
-      <!-- Form added for Mobile Go/Search submit handle -->
       <form onsubmit="event.preventDefault(); handleSearch();">
         <input 
           id="searchInput" 
@@ -140,7 +145,6 @@
     </header>
 
     <main>
-      <!-- Continue Watching Banner (Opens YouTube) -->
       <div class="continue-card" onclick="openLecture()">
         <div class="play-btn">▶</div>
         <div class="continue-info">
@@ -151,77 +155,25 @@
 
       <div class="section-head">Quick Access</div>
 
-      <!-- Quick Access Grid Components -->
       <div class="grid-container">
-        <div class="grid-item" onclick="openLecture()">
-          <div class="grid-icon">📚</div>
-          <div class="grid-label">My Batches</div>
-        </div>
-
-        <div class="grid-item" onclick="alert('Opening History...')">
-          <div class="grid-icon">🕒</div>
-          <div class="grid-label">My History</div>
-        </div>
-
-        <div class="grid-item" onclick="alert('Opening Doubts Section...')">
-          <div class="grid-icon">❓</div>
-          <div class="grid-label">My Doubts</div>
-        </div>
-
-        <div class="grid-item" onclick="alert('Opening PDF Bank...')">
-          <div class="grid-icon">📄</div>
-          <div class="grid-label">PDF Bank</div>
-        </div>
-
-        <div class="grid-item" onclick="alert('Opening Dashboard...')">
-          <div class="grid-icon">📊</div>
-          <div class="grid-label">Dashboard</div>
-        </div>
-
-        <div class="grid-item" onclick="alert('Opening Downloads...')">
-          <div class="grid-icon">📥</div>
-          <div class="grid-label">Downloads</div>
-        </div>
-
-        <div class="grid-item" onclick="alert('Opening Test Series...')">
-          <div class="grid-icon">⚔️</div>
-          <div class="grid-label">Test Series</div>
-        </div>
-
-        <div class="grid-item" onclick="alert('Opening Rank Predictor...')">
-          <div class="grid-icon">🎓</div>
-          <div class="grid-label">Rank Predictor</div>
-        </div>
-
-        <div class="grid-item" onclick="alert('Opening Bookmarks...')">
-          <div class="grid-icon">🔖</div>
-          <div class="grid-label">Bookmarks</div>
-        </div>
+        <div class="grid-item" onclick="openLecture()"><div class="grid-icon">📚</div><div class="grid-label">My Batches</div></div>
+        <div class="grid-item" onclick="alert('Opening History...')"><div class="grid-icon">🕒</div><div class="grid-label">My History</div></div>
+        <div class="grid-item" onclick="alert('Opening Doubts Section...')"><div class="grid-icon">❓</div><div class="grid-label">My Doubts</div></div>
+        <div class="grid-item" onclick="alert('Opening PDF Bank...')"><div class="grid-icon">📄</div><div class="grid-label">PDF Bank</div></div>
+        <div class="grid-item" onclick="alert('Opening Dashboard...')"><div class="grid-icon">📊</div><div class="grid-label">Dashboard</div></div>
+        <div class="grid-item" onclick="alert('Opening Downloads...')"><div class="grid-icon">📥</div><div class="grid-label">Downloads</div></div>
+        <div class="grid-item" onclick="alert('Opening Test Series...')"><div class="grid-icon">⚔️</div><div class="grid-label">Test Series</div></div>
+        <div class="grid-item" onclick="alert('Opening Rank Predictor...')"><div class="grid-icon">🎓</div><div class="grid-label">Rank Predictor</div></div>
+        <div class="grid-item" onclick="alert('Opening Bookmarks...')"><div class="grid-icon">🔖</div><div class="grid-label">Bookmarks</div></div>
       </div>
     </main>
 
-    <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
-      <div class="nav-item">
-        <span class="nav-icon">📺</span>
-        <span>Batches</span>
-      </div>
-      <div class="nav-item active">
-        <span class="nav-icon">📖</span>
-        <span>Study</span>
-      </div>
-      <div class="nav-item">
-        <span class="nav-icon">🏢</span>
-        <span>Offline</span>
-      </div>
-      <div class="nav-item">
-        <span class="nav-icon">π</span>
-        <span>Pi</span>
-      </div>
-      <div class="nav-item">
-        <span class="nav-icon">🏪</span>
-        <span>PW Store</span>
-      </div>
+      <div class="nav-item"><span class="nav-icon">📺</span><span>Batches</span></div>
+      <div class="nav-item active"><span class="nav-icon">📖</span><span>Study</span></div>
+      <div class="nav-item"><span class="nav-icon">🏢</span><span>Offline</span></div>
+      <div class="nav-item"><span class="nav-icon">π</span><span>Pi</span></div>
+      <div class="nav-item"><span class="nav-icon">🏪</span><span>PW Store</span></div>
     </div>
   </div>
 
@@ -246,6 +198,7 @@
     </div>
 
     <div class="input-bar">
+      <button id="micBtn" onclick="toggleRecording()" class="mic-btn">🎙️</button>
       <input 
         id="chatInput" 
         type="text" 
@@ -256,7 +209,7 @@
       <button onclick="sendMessage()" class="send-btn">Send</button>
     </div>
 
-    <!-- Custom Action Popup Modal -->
+    <!-- Action Modal -->
     <div id="actionModal" class="action-modal-overlay" onclick="closeActionModal(event)">
       <div class="action-card" onclick="event.stopPropagation()">
         <div class="reactions-bar">
@@ -293,7 +246,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Generate unique User ID
     let myUserId = localStorage.getItem("chat_user_id");
     if (!myUserId) {
       myUserId = "user_" + Math.random().toString(36).substr(2, 9);
@@ -304,6 +256,10 @@
     const SECRET_CODE = "#789#"; 
     let selectedMsgId = null;
     let selectedSenderId = null;
+
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
 
     if ("Notification" in window) {
       Notification.requestPermission();
@@ -373,11 +329,63 @@
         senderId: myUserId,
         senderName: myName,
         message: text,
+        type: 'text',
         time: time,
         timestamp: Date.now()
       });
 
       input.value = '';
+    }
+
+    /* Voice Recording Mechanism */
+    async function toggleRecording() {
+      const micBtn = document.getElementById('micBtn');
+
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = event => {
+            audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.readAsDataURL(audioBlob);
+            reader.onloadend = () => {
+              const base64Audio = reader.result;
+              sendAudioMessage(base64Audio);
+            };
+          };
+
+          mediaRecorder.start();
+          isRecording = true;
+          micBtn.classList.add('recording');
+          micBtn.innerText = "⏹️";
+        } catch (err) {
+          alert("Microphone permission denied or not supported on this browser!");
+        }
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        micBtn.classList.remove('recording');
+        micBtn.innerText = "🎙️";
+      }
+    }
+
+    function sendAudioMessage(base64Audio) {
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      db.ref("secret_messages").push({
+        senderId: myUserId,
+        senderName: myName,
+        audio: base64Audio,
+        type: 'audio',
+        time: time,
+        timestamp: Date.now()
+      });
     }
 
     function openActionModal(msgId, senderId) {
@@ -422,41 +430,4 @@
     let isListening = false;
     let initialLoad = true;
 
-    function listenForMessages() {
-      if (isListening) return;
-      isListening = true;
-
-      const container = document.getElementById('messageContainer');
-      
-      // Message Added Listener
-      db.ref("secret_messages").limitToLast(50).on("child_added", (snapshot) => {
-        const data = snapshot.val();
-        const msgId = snapshot.key;
-        const isMe = (data.senderId === myUserId);
-
-        const reactionHTML = data.reaction ? `<span class="reaction-badge">${data.reaction}</span>` : '';
-
-        const msgHTML = `
-          <div id="msg-${msgId}" class="msg ${isMe ? 'msg-out' : 'msg-in'}" onclick="openActionModal('${msgId}', '${data.senderId}')">
-            ${!isMe ? `<span class="sender-name">${data.senderName || 'Friend'}</span>` : ''}
-            ${data.message}
-            ${reactionHTML}
-            <span class="time">${data.time}</span>
-          </div>
-        `;
-        
-        container.insertAdjacentHTML('beforeend', msgHTML);
-        container.scrollTop = container.scrollHeight;
-
-        if (!isMe && !initialLoad) {
-          showFakeNotification();
-        }
-      });
-
-      // Message Changed (Reaction Added) Listener
-      db.ref("secret_messages").on("child_changed", (snapshot) => {
-        const data = snapshot.val();
-        const msgId = snapshot.key;
-        const msgElem = document.getElementById(`msg-${msgId}`);
-        if (msgElem) {
-          let badge = msgElem.query
+    
