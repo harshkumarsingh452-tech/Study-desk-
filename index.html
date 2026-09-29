@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Physics Wallah Daily Planner</title>
 
-  <!-- PW Icons & Manifest Links -->
+  <!-- PW Icons & Manifest Links (Local Path) -->
   <link rel="manifest" href="./manifest.json">
-  <link rel="icon" type="image/jpeg" href="https://upload.wikimedia.org/wikipedia/commons/8/89/Physics_wallah_logo.jpg">
-  <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/8/89/Physics_wallah_logo.jpg">
+  <link rel="icon" type="image/jpeg" href="./pw-logo.jpg">
+  <link rel="apple-touch-icon" href="./pw-logo.jpg">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="PW Planner">
@@ -338,7 +338,7 @@
         try {
           new Notification("Physics Wallah Daily Planner", {
             body: randomFakeText,
-            icon: "https://upload.wikimedia.org/wikipedia/commons/8/89/Physics_wallah_logo.jpg",
+            icon: "./pw-logo.jpg",
             vibrate: [200, 100, 200]
           });
         } catch (e) {
