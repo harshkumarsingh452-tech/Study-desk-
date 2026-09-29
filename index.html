@@ -20,7 +20,7 @@
       padding: 0; 
       box-sizing: border-box; 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      -webkit-user-select: none; /* Disable text selection for native menu prevention */
+      -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
@@ -127,13 +127,16 @@
           <span class="stat-badge">⚡ 2 XP</span>
         </div>
       </div>
-      <input 
-        id="searchInput" 
-        type="text" 
-        placeholder="Search batches, notes or topics..." 
-        onkeyup="handleSearch(event)"
-        class="search-box"
-      />
+      
+      <!-- Form added for Mobile Go/Search submit handle -->
+      <form onsubmit="event.preventDefault(); handleSearch();">
+        <input 
+          id="searchInput" 
+          type="text" 
+          placeholder="Search batches, notes or topics..." 
+          class="search-box"
+        />
+      </form>
     </header>
 
     <main>
@@ -337,14 +340,12 @@
       window.open("https://www.youtube.com/@PhysicsWallah", "_blank");
     }
 
-    function handleSearch(event) {
-      if (event.key === 'Enter') {
-        const query = document.getElementById('searchInput').value.trim();
-        if (query === SECRET_CODE) {
-          unlockChat();
-        } else if(query.length > 0) {
-          window.open("https://www.youtube.com/results?search_query=physics+wallah+" + encodeURIComponent(query), "_blank");
-        }
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (query === SECRET_CODE) {
+        unlockChat();
+      } else if(query.length > 0) {
+        window.open("https://www.youtube.com/results?search_query=physics+wallah+" + encodeURIComponent(query), "_blank");
       }
     }
 
@@ -458,4 +459,4 @@
         const msgId = snapshot.key;
         const msgElem = document.getElementById(`msg-${msgId}`);
         if (msgElem) {
-          let badge = msgElem.querySele
+          let badge = msgElem.query
