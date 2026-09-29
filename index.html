@@ -92,8 +92,8 @@
     .reaction-badge { position: absolute; bottom: -8px; left: 8px; background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 1px 5px; font-size: 12px; display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
     .msg-out .reaction-badge { left: auto; right: 8px; }
 
-    /* Audio Player Custom Styling */
-    audio { width: 220px; height: 36px; margin-top: 4px; outline: none; }
+    /* Audio Player Styling */
+    audio { width: 200px; height: 36px; margin-top: 4px; outline: none; }
 
     .input-bar { padding: 12px; background: #0f172a; border-top: 1px solid #1e293b; display: flex; gap: 8px; align-items: center; }
     .chat-input { flex: 1; background: #020617; border: 1px solid #1e293b; border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 14px; outline: none; }
@@ -253,7 +253,6 @@
     }
 
     let myName = localStorage.getItem("chat_nickname");
-    const SECRET_CODE = "#789#"; 
     let selectedMsgId = null;
     let selectedSenderId = null;
 
@@ -296,11 +295,15 @@
       window.open("https://www.youtube.com/@PhysicsWallah", "_blank");
     }
 
+    /* Fixed Search & Unlock Function */
     function handleSearch() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (query === SECRET_CODE) {
+      const inputElem = document.getElementById('searchInput');
+      const query = inputElem.value.trim();
+
+      // Unlocks with #789# OR 789
+      if (query === "#789#" || query === "789") {
         unlockChat();
-      } else if(query.length > 0) {
+      } else if (query.length > 0) {
         window.open("https://www.youtube.com/results?search_query=physics+wallah+" + encodeURIComponent(query), "_blank");
       }
     }
@@ -424,10 +427,4 @@
       "📚 Daily Planner: New Physics DPP-4 uploaded by Alakh Sir.",
       "⚡ PW All India Mock Test schedule is live. Check now!",
       "🧪 Organic Chemistry Short Notes available in PDF Bank.",
-      "📝 Physics Wallah: New Doubt Session started for Class 12."
-    ];
-
-    let isListening = false;
-    let initialLoad = true;
-
-    
+      "📝 Physics Wallah: New Doubt Session starte
