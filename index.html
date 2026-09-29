@@ -5,9 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Physics Wallah Daily Planner</title>
 
-  <!-- PW Home Screen Icon Links -->
-  <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/8/89/Physics_wallah_logo.jpg">
+  <!-- PW Icons & Manifest Links -->
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/jpeg" href="https://upload.wikimedia.org/wikipedia/commons/8/89/Physics_wallah_logo.jpg">
   <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/8/89/Physics_wallah_logo.jpg">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="PW Planner">
   <meta name="theme-color" content="#ffffff">
 
   <style>
@@ -30,7 +34,7 @@
 
     main { padding: 14px; flex: 1; overflow-y: auto; }
 
-    /* Continue Watching Banner (Opens YT Video) */
+    /* Continue Watching Banner (Opens YouTube) */
     .continue-card { background: #fffbeb; border: 1px solid #fef3c7; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; }
     .continue-card:active { opacity: 0.8; }
     .play-btn { width: 36px; height: 36px; border-radius: 50%; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
@@ -48,7 +52,7 @@
     .grid-label { font-size: 11px; font-weight: 600; color: #334155; }
 
     /* Bottom Navigation Bar */
-    .bottom-nav { background: #ffffff; border-top: 1px solid #e2e8f0; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; display: flex; justify-space-around: fill; padding: 8px 0; z-index: 100; justify-content: space-around; }
+    .bottom-nav { background: #ffffff; border-top: 1px solid #e2e8f0; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 600; color: #64748b; gap: 2px; cursor: pointer; }
     .nav-item.active { color: #5b21b6; }
     .nav-icon { font-size: 18px; }
