@@ -61,13 +61,14 @@
     #chatScreen { display: none; flex-direction: column; height: 100vh; background-color: #020617; }
     .chat-header { background: #0f172a; padding: 12px 16px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
     .user-info { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 38px; height: 38px; border-radius: 50%; background: #4f46e5; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; }
-    .lock-btn { background: #1e293b; border: none; color: #94a3b8; font-size: 13px; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+    .avatar { width: 38px; height: 38px; border-radius: 50%; background: #4f46e5; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; text-transform: uppercase; }
+    .header-btns { display: flex; gap: 6px; }
+    .lock-btn { background: #1e293b; border: none; color: #94a3b8; font-size: 12px; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
     
     .messages-area { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
     .encrypted-tag { text-align: center; font-size: 11px; color: #64748b; background: #0f172a; padding: 4px 12px; border-radius: 20px; align-self: center; border: 1px solid #1e293b; }
     
-    .msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.4; word-break: break-word; }
+    .msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.4; word-break: break-word; position: relative; cursor: pointer; }
     .msg-in { background: #1e293b; border-top-left-radius: 2px; align-self: flex-start; color: #e2e8f0; border: 1px solid #334155; }
     .msg-out { background: #4f46e5; border-top-right-radius: 2px; align-self: flex-end; color: #fff; }
     .time { font-size: 10px; opacity: 0.6; margin-top: 4px; display: block; text-align: right; }
@@ -191,13 +192,16 @@
   <div id="chatScreen">
     <div class="chat-header">
       <div class="user-info">
-        <div class="avatar">S</div>
+        <div id="userAvatar" class="avatar">U</div>
         <div>
-          <div style="font-weight: 600; font-size: 14px; color:#fff;">Secret Workspace</div>
+          <div id="displayNickName" style="font-weight: 600; font-size: 14px; color:#fff;">Secret Workspace</div>
           <div style="font-size: 11px; color: #4ade80;">● Online</div>
         </div>
       </div>
-      <button onclick="lockApp()" class="lock-btn">🔒 Lock</button>
+      <div class="header-btns">
+        <button onclick="changeName()" class="lock-btn">✏️ Name</button>
+        <button onclick="lockApp()" class="lock-btn">🔒 Lock</button>
+      </div>
     </div>
 
     <div id="messageContainer" class="messages-area">
@@ -234,16 +238,38 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let myName = localStorage.getItem("chat_user_id");
-    if(!myName) {
-      myName = "User_" + Math.floor(Math.random() * 8999 + 1000);
-      localStorage.setItem("chat_user_id", myName);
-    }
-
+    let myName = localStorage.getItem("chat_nickname");
     const SECRET_CODE = "#789#"; 
 
     if ("Notification" in window) {
       Notification.requestPermission();
+    }
+
+    function checkNickname() {
+      if (!myName) {
+        myName = prompt("Enter your nickname / chat name:", "");
+        if (!myName || myName.trim() === "") {
+          myName = "User_" + Math.floor(Math.random() * 8999 + 1000);
+        } else {
+          myName = myName.trim();
+        }
+        localStorage.setItem("chat_nickname", myName);
+      }
+      updateUIHeader();
+    }
+
+    function changeName() {
+      let newName = prompt("Enter new nickname:", myName);
+      if (newName && newName.trim() !== "") {
+        myName = newName.trim();
+        localStorage.setItem("chat_nickname", myName);
+        updateUIHeader();
+      }
+    }
+
+    function updateUIHeader() {
+      document.getElementById("displayNickName").innerText = myName;
+      document.getElementById("userAvatar").innerText = myName.charAt(0).toUpperCase();
     }
 
     function openLecture() {
@@ -262,6 +288,7 @@
     }
 
     function unlockChat() {
+      checkNickname();
       document.getElementById('searchInput').value = '';
       document.getElementById('studyScreen').style.display = 'none';
       document.getElementById('chatScreen').style.display = 'flex';
@@ -290,6 +317,12 @@
       input.value = '';
     }
 
+    function deleteMessage(msgId, senderName) {
+      if (senderName === myName || confirm("Delete this message for everyone?")) {
+        db.ref("secret_messages").child(msgId).remove();
+      }
+    }
+
     const fakeNotifications = [
       "📚 Daily Planner: New Physics DPP-4 uploaded by Alakh Sir.",
       "⚡ PW All India Mock Test schedule is live. Check now!",
@@ -306,12 +339,14 @@
 
       const container = document.getElementById('messageContainer');
       
+      // Message Added Listener
       db.ref("secret_messages").limitToLast(50).on("child_added", (snapshot) => {
         const data = snapshot.val();
+        const msgId = snapshot.key;
         const isMe = data.sender === myName;
 
         const msgHTML = `
-          <div class="msg ${isMe ? 'msg-out' : 'msg-in'}">
+          <div id="msg-${msgId}" class="msg ${isMe ? 'msg-out' : 'msg-in'}" onclick="deleteMessage('${msgId}', '${data.sender}')" title="Click to delete">
             ${!isMe ? `<strong style="font-size:10px; color:#818cf8; display:block; margin-bottom:2px;">${data.sender}</strong>` : ''}
             ${data.message}
             <span class="time">${data.time}</span>
@@ -323,6 +358,15 @@
 
         if (!isMe && !initialLoad) {
           showFakeNotification();
+        }
+      });
+
+      // Message Removed Listener
+      db.ref("secret_messages").on("child_removed", (snapshot) => {
+        const msgId = snapshot.key;
+        const msgElem = document.getElementById(`msg-${msgId}`);
+        if (msgElem) {
+          msgElem.remove();
         }
       });
 
