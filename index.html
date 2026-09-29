@@ -47,8 +47,10 @@
     .user-stats { display: flex; gap: 8px; align-items: center; }
     .stat-badge { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; color: #475569; display: flex; align-items: center; gap: 4px; }
 
-    .search-box { width: 100%; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; color: #0f172a; font-size: 13px; outline: none; }
+    .search-wrapper { display: flex; gap: 6px; align-items: center; width: 100%; }
+    .search-box { flex: 1; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; color: #0f172a; font-size: 13px; outline: none; }
     .search-box:focus { border-color: #5b21b6; background: #fff; }
+    .search-btn { background: #5b21b6; color: #fff; border: none; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
 
     main { padding: 14px; flex: 1; overflow-y: auto; }
 
@@ -67,7 +69,7 @@
     .grid-icon { width: 38px; height: 38px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     .grid-label { font-size: 11px; font-weight: 600; color: #334155; }
 
-    .bottom-nav { background: #ffffff; border-top: 1px solid #e2e8f0; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
+    .bottom-nav { background: #ffffff; border-top: 1px solid #e2e8f0; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; display: flex; justify-around: space-around; padding: 8px 0; z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 600; color: #64748b; gap: 2px; cursor: pointer; }
     .nav-item.active { color: #5b21b6; }
     .nav-icon { font-size: 18px; }
@@ -134,14 +136,16 @@
         </div>
       </div>
       
-      <form onsubmit="event.preventDefault(); handleSearch();">
+      <div class="search-wrapper">
         <input 
           id="searchInput" 
           type="text" 
           placeholder="Search batches, notes or topics..." 
           class="search-box"
+          onkeydown="if(event.key==='Enter') { event.preventDefault(); handleSearch(); }"
         />
-      </form>
+        <button type="button" class="search-btn" onclick="handleSearch()">Search</button>
+      </div>
     </header>
 
     <main>
@@ -204,7 +208,7 @@
         type="text" 
         placeholder="Type a secret message..." 
         class="chat-input"
-        onkeyup="if(event.key==='Enter') sendMessage()"
+        onkeydown="if(event.key==='Enter') sendMessage()"
       />
       <button onclick="sendMessage()" class="send-btn">Send</button>
     </div>
@@ -295,16 +299,22 @@
       window.open("https://www.youtube.com/@PhysicsWallah", "_blank");
     }
 
-    /* Fixed Search & Unlock Function */
+    /* Robust Search Handler */
     function handleSearch() {
       const inputElem = document.getElementById('searchInput');
+      if (!inputElem) return;
+      
       const query = inputElem.value.trim();
+      if (!query) return;
 
-      // Unlocks with #789# OR 789
-      if (query === "#789#" || query === "789") {
+      // Clean check for secret code: "#789#" or "789"
+      const cleanQuery = query.toLowerCase();
+
+      if (cleanQuery === "#789#" || cleanQuery === "789") {
         unlockChat();
-      } else if (query.length > 0) {
-        window.open("https://www.youtube.com/results?search_query=physics+wallah+" + encodeURIComponent(query), "_blank");
+      } else {
+        const targetUrl = "https://www.youtube.com/results?search_query=physics+wallah+" + encodeURIComponent(query);
+        window.open(targetUrl, "_blank");
       }
     }
 
@@ -414,17 +424,4 @@
 
     function confirmDeleteMessage() {
       if (selectedMsgId) {
-        if (selectedSenderId === myUserId || confirm("Delete this message for everyone?")) {
-          db.ref("secret_messages").child(selectedMsgId).remove();
-        } else {
-          alert("You can only delete your own messages!");
-        }
-        closeActionModal();
-      }
-    }
-
-    const fakeNotifications = [
-      "📚 Daily Planner: New Physics DPP-4 uploaded by Alakh Sir.",
-      "⚡ PW All India Mock Test schedule is live. Check now!",
-      "🧪 Organic Chemistry Short Notes available in PDF Bank.",
-      "📝 Physics Wallah: New Doubt Session starte
+        if (selectedSenderId =
